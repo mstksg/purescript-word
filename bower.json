@@ -1,22 +1,32 @@
 {
-  "name": "purescript-word",
-  "description": "Fixed width word and operations",
-  "main": [
-    "Data/Word.purs"
-  ],
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "output"
-  ],
-  "dependencies": {
-      "purescript-prelude": "^3.0.0",
-      "purescript-console": "^3.0.0",
-      "purescript-generics": "^4.0.0",
-      "purescript-assert": "^3.0.0"
-  },
-  "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
-  }
+    "name": "purescript-word",
+    "homepage": "https://github.com/proclivis/purescript-word",
+    "description": "Fixed width word and operations",
+    "authors": [
+	"Michael Jones <proclivis@gmail.com>"
+    ],
+    "license": "MIT",
+    "repository": {
+	"type": "git",
+	"url": "git://github.com/proclivis/purescript-word.git"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output",
+	"test",
+	"bower.json",
+	"package.json"
+    ],
+    "dependencies": {
+	"purescript-prelude": "^3.0.0",
+	"purescript-integers": "^3.0.0",
+        "purescript-generics": "^4.0.0"
+    },
+    "devDependencies": {
+        "purescript-psci-support": "^3.0.0",
+	"purescript-assert": "^3.0.0",
+	"purescript-console": "^3.0.0"
+    }
 }
