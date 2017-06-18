@@ -4,7 +4,8 @@ module Data.Word
        , and, (.&.)
        , or, (.|.)
        , xor, (.^.)
-       , complement) where
+       , complement
+       , shl, shr, zshr) where
        
 import Prelude
 import Data.Generic (class Generic, gEq, gCompare, gShow)
@@ -57,3 +58,15 @@ infixl 10 xor as .^.
 -- | Bitwise ~.
 complement :: Word -> Word
 complement (Word a) = Word $ B.and (B.complement a) 0xFFFF
+
+-- | Shift left
+shl :: Word -> Word -> Word
+shl (Word a) (Word s) = Word $ B.shl a s
+
+-- | Shift Right
+shr :: Word -> Word -> Word
+shr (Word a) (Word s)  = Word $ B.shr a s
+
+-- | Zero shift Right
+zshr :: Word -> Word -> Word
+zshr (Word a) (Word s) = Word $ B.zshr a s
