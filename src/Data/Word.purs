@@ -4,7 +4,7 @@ module Data.Word
        , and, (.&.)
        , or, (.|.)
        , xor, (.^.)
-       , complement, (.~.)) where
+       , complement) where
        
 import Prelude
 import Data.Generic (class Generic, gEq, gCompare, gShow)
@@ -56,7 +56,4 @@ infixl 10 xor as .^.
 
 -- | Bitwise ~.
 complement :: Word -> Word
-complement (Word a) = Word (B.complement a)
-
--- How to prefix?
-infixl 10 complement as .~.
+complement (Word a) = Word $ B.and (B.complement a) 0xFFFF

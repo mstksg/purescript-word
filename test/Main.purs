@@ -4,7 +4,7 @@ import Prelude (Unit, discard, ($), (+), (==))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
        
-import Data.Word (Word, fromInt, (.&.), (.|.), (.^.), (.~))
+import Data.Word (Word, fromInt, (.&.), (.|.), (.^.), complement)
 
 import Test.Assert (ASSERT, assert')
        
@@ -15,5 +15,5 @@ main = do
     assert' "Word 4 .&. Word 4 == Word 4" $ fromInt 4 .&. fromInt 4 == fromInt 4 :: Word
     assert' "Word 4 .|. Word 2 == Word 6" $ fromInt 4 .|. fromInt 2 == fromInt 6 :: Word
     assert' "Word 4 .^. Word 2 == Word 6" $ fromInt 4 .^. fromInt 2 == fromInt 6 :: Word
---    assert' ".~.Word 0x00000000 = Word 0xFFFFFFFF" $ .~.fromInt 0x00000000 == .~.fromInt 0xFFFFFFFF :: Word
+    assert' "complement Word 0x0000 = complement Word 0xFFFF" $ complement(fromInt 0x0000) == (fromInt 0xFFFF) :: Word
     log "Done"
