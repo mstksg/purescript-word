@@ -1,16 +1,13 @@
 module Data.Word
        ( Word
        , Word32
-       , and, (.&.)
-       , or, (.|.)
-       , xor, (.^.)
-       , complement
-       , shl, shr, zshr) where
+       ) where
        
 import Prelude
 import Data.String (take)
 import Data.BigInt as BI
-       
+
+import Data.Bits (class Bits)
 import Data.Integral (class Integral)
 import Data.UInt (UInt, fromInt, fromNumber, toInt) as U
 import Data.UInt.Bits as B
@@ -72,37 +69,12 @@ instance semiringWord32 :: Semiring Word32 where
 instance word32Integral :: Integral Word32 where
     fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word32 a) = BI.fromInt <<< U.toInt $ a
-        
--- | Bitwise AND.
-and :: Word32 -> Word32 -> Word32
-and (Word32 a) (Word32 b) = Word32 (B.and a b)
 
-infixl 10 and as .&.
-
--- | Bitwise OR.
-or :: Word32 -> Word32 -> Word32
-or (Word32 a) (Word32 b) = Word32 (B.or a b)
-
-infixl 10 or as .|.
-
--- | Bitwise XOR.
-xor :: Word32 -> Word32 -> Word32
-xor (Word32 a) (Word32 b) = Word32 (B.xor a b)
-
-infixl 10 xor as .^.
-
--- | Bitwise ~.
-complement :: Word32 -> Word32
-complement (Word32 a) = Word32 $ B.complement a
-
--- | Shift left
-shl :: Word32 -> Word32 -> Word32
-shl (Word32 a) (Word32 s) = Word32 $ B.shl a s
-
--- | Shift Right
-shr :: Word32 -> Word32 -> Word32
-shr (Word32 a) (Word32 s)  = Word32 $ B.shr a s
-
--- | Zero shift Right
-zshr :: Word32 -> Word32 -> Word32
-zshr (Word32 a) (Word32 s) = Word32 $ B.zshr a s
+instance word32Bits :: Bits Word32 where
+    and (Word32 a) (Word32 b) = Word32 (B.and a b)
+    or (Word32 a) (Word32 b) = Word32 (B.or a b)
+    xor (Word32 a) (Word32 b) = Word32 (B.xor a b)
+    complement (Word32 a) = Word32 $ B.complement a
+    shl (Word32 a) s = Word32 $ B.shl a s
+    shr (Word32 a) s  = Word32 $ B.shr a s
+    zshr (Word32 a) s = Word32 $ B.zshr a s
