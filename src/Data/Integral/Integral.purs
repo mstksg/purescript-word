@@ -1,13 +1,19 @@
 module Integral
-  ( class Integral
+  ( class Integral, fromBigInt, toBigInt
   , fromIntegral
   ) where
 
-import Data.BigInt
-
+import Prelude ((<<<))
+import Data.BigInt as B
+       
 class Integral where
-    fromBigInt :: forall a . BigInt -> a
-    toBigInt :: forall a . a -> BigInt
+    fromBigInt :: B.BigInt -> Int
+    toBigInt :: Int -> B.BigInt
 
+instance integralInt :: Integral where
+  fromBigInt i = 0
+  toBigInt i = B.fromInt i
+    
+--fromIntegral :: Int -> Int
 fromIntegral :: forall a b. Integral a => Integral b => a -> b
-fromIntegral = fromBigInt . toBigInt
+fromIntegral = fromBigInt <<< toBigInt
