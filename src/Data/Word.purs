@@ -1,5 +1,6 @@
 module Data.Word
        ( Word
+       , Word32
        , fromInt, fromUInt, toInt, toUInt
        , and, (.&.)
        , or, (.|.)
@@ -12,19 +13,20 @@ import Data.String (take)
 import Data.UInt (UInt, fromInt, toInt) as U
 import Data.UInt.Bits as B
 
--- | A generic Word
-newtype Word = Word U.UInt
+-- | A generic Word32
+newtype Word32 = Word32 U.UInt
+type Word = Word32
 
-instance showWord :: Show Word where
-    show (Word a) = "Word 0x" <> showHex (B.and (B.shr a (U.fromInt 28)) (U.fromInt 0xF))
-                              <> showHex (B.and (B.shr a (U.fromInt 24)) (U.fromInt 0xF))  
-                              <> showHex (B.and (B.shr a (U.fromInt 20)) (U.fromInt 0xF))  
-                              <> showHex (B.and (B.shr a (U.fromInt 16)) (U.fromInt 0xF))  
-                              <> showHex (B.and (B.shr a (U.fromInt 12)) (U.fromInt 0xF))  
-                              <> showHex (B.and (B.shr a (U.fromInt 8)) (U.fromInt 0xF))  
-                              <> showHex (B.and (B.shr a (U.fromInt 4)) (U.fromInt 0xF))  
-                              <> showHex (B.and a (U.fromInt 0xF))
-                              <> " (" <> show a <> ")"
+instance showWord32 :: Show Word32 where
+    show (Word32 a) = "Word32 0x" <> showHex (B.and (B.shr a (U.fromInt 28)) (U.fromInt 0xF))
+                                  <> showHex (B.and (B.shr a (U.fromInt 24)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 20)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 16)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 12)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 8)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 4)) (U.fromInt 0xF))  
+                                  <> showHex (B.and a (U.fromInt 0xF))
+                                  <> " (" <> show a <> ")"
         where
         -- Inelegant brute force conversion
         showHex :: U.UInt -> String
@@ -37,64 +39,64 @@ instance showWord :: Show Word where
         showHex b | b == (U.fromInt 15) = "F"
         showHex b = "#" <> show b <> "#"
 
-instance eqWord :: Eq Word where
-    eq (Word a) (Word b) = a == b
+instance eqWord32 :: Eq Word32 where
+    eq (Word32 a) (Word32 b) = a == b
 
-instance ordWord :: Ord Word where
-    compare (Word a) (Word b) = compare a b
+instance ordWord32 :: Ord Word32 where
+    compare (Word32 a) (Word32 b) = compare a b
 
-instance boundedWord :: Bounded Word where
-    bottom = Word $ U.fromInt 0
-    top = Word $ B.complement (U.fromInt 0)
+instance boundedWord32 :: Bounded Word32 where
+    bottom = Word32 $ U.fromInt 0
+    top = Word32 $ B.complement (U.fromInt 0)
 
-instance semiringWord :: Semiring Word where
+instance semiringWord32 :: Semiring Word32 where
     zero = bottom
-    one = Word $ U.fromInt 1
-    add (Word a) (Word b) = Word (a+b)
-    mul (Word a) (Word b) = Word (a*b)
+    one = Word32 $ U.fromInt 1
+    add (Word32 a) (Word32 b) = Word32 (a+b)
+    mul (Word32 a) (Word32 b) = Word32 (a*b)
 
-fromInt :: Int -> Word
-fromInt = Word <<< ((add (U.fromInt 0)) :: U.UInt -> U.UInt) <<< U.fromInt
+fromInt :: Int -> Word32
+fromInt = Word32 <<< ((add (U.fromInt 0)) :: U.UInt -> U.UInt) <<< U.fromInt
 
-fromUInt :: U.UInt -> Word
-fromUInt = Word
+fromUInt :: U.UInt -> Word32
+fromUInt = Word32
 
-toInt :: Word -> Int
-toInt (Word a) = U.toInt a
+toInt :: Word32 -> Int
+toInt (Word32 a) = U.toInt a
 
-toUInt :: Word -> U.UInt
-toUInt (Word a) = a
+toUInt :: Word32 -> U.UInt
+toUInt (Word32 a) = a
         
 -- | Bitwise AND.
-and :: Word -> Word -> Word
-and (Word a) (Word b) = Word (B.and a b)
+and :: Word32 -> Word32 -> Word32
+and (Word32 a) (Word32 b) = Word32 (B.and a b)
 
 infixl 10 and as .&.
 
 -- | Bitwise OR.
-or :: Word -> Word -> Word
-or (Word a) (Word b) = Word (B.or a b)
+or :: Word32 -> Word32 -> Word32
+or (Word32 a) (Word32 b) = Word32 (B.or a b)
 
 infixl 10 or as .|.
 
 -- | Bitwise XOR.
-xor :: Word -> Word -> Word
-xor (Word a) (Word b) = Word (B.xor a b)
+xor :: Word32 -> Word32 -> Word32
+xor (Word32 a) (Word32 b) = Word32 (B.xor a b)
 
 infixl 10 xor as .^.
 
 -- | Bitwise ~.
-complement :: Word -> Word
-complement (Word a) = Word $ B.complement a
+complement :: Word32 -> Word32
+complement (Word32 a) = Word32 $ B.complement a
 
 -- | Shift left
-shl :: Word -> Word -> Word
-shl (Word a) (Word s) = Word $ B.shl a s
+shl :: Word32 -> Word32 -> Word32
+shl (Word32 a) (Word32 s) = Word32 $ B.shl a s
 
 -- | Shift Right
-shr :: Word -> Word -> Word
-shr (Word a) (Word s)  = Word $ B.shr a s
+shr :: Word32 -> Word32 -> Word32
+shr (Word32 a) (Word32 s)  = Word32 $ B.shr a s
 
 -- | Zero shift Right
-zshr :: Word -> Word -> Word
-zshr (Word a) (Word s) = Word $ B.zshr a s
+zshr :: Word32 -> Word32 -> Word32
+zshr (Word32 a) (Word32 s) = Word32 $ B.zshr a s
