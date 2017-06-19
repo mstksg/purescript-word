@@ -1,11 +1,9 @@
 module Test.Main where
 
-import Prelude (Unit, discard, top, bottom, ($), (+), (==), show, (<>))
+import Prelude (Unit, discard, top, ($), (+), (==))
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-import Data.BigInt as BI
-import Data.Int as I
        
 import Data.Integral (fromIntegral)
 import Data.Word (Word, (.&.), (.|.), (.^.), complement, shl, shr, zshr)

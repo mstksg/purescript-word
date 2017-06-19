@@ -1,7 +1,6 @@
 module Data.Word
        ( Word
        , Word32
-       , fromInt, fromUInt, toInt, toUInt
        , and, (.&.)
        , or, (.|.)
        , xor, (.^.)
@@ -58,17 +57,17 @@ instance semiringWord32 :: Semiring Word32 where
     add (Word32 a) (Word32 b) = Word32 (a+b)
     mul (Word32 a) (Word32 b) = Word32 (a*b)
 
-fromInt :: Int -> Word32
-fromInt = Word32 <<< ((add (U.fromInt 0)) :: U.UInt -> U.UInt) <<< U.fromInt
+--fromInt :: Int -> Word32
+--fromInt = Word32 <<< ((add (U.fromInt 0)) :: U.UInt -> U.UInt) <<< U.fromInt
 
-fromUInt :: U.UInt -> Word32
-fromUInt = Word32
+--fromUInt :: U.UInt -> Word32
+--fromUInt = Word32
 
-toInt :: Word32 -> Int
-toInt (Word32 a) = U.toInt a
+--toInt :: Word32 -> Int
+--toInt (Word32 a) = U.toInt a
 
-toUInt :: Word32 -> U.UInt
-toUInt (Word32 a) = a
+--toUInt :: Word32 -> U.UInt
+--toUInt (Word32 a) = a
 
 instance word32Integral :: Integral Word32 where
     fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
