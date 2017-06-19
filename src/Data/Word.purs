@@ -10,9 +10,12 @@ module Data.Word
        
 import Prelude
 import Data.String (take)
-import Data.UInt (UInt, fromInt, toInt) as U
+import Data.BigInt as BI
+       
+import Data.Integral (class Integral)
+import Data.UInt (UInt, fromInt, fromNumber, toInt) as U
 import Data.UInt.Bits as B
-
+       
 -- | A generic Word32
 newtype Word32 = Word32 U.UInt
 type Word = Word32
@@ -66,6 +69,10 @@ toInt (Word32 a) = U.toInt a
 
 toUInt :: Word32 -> U.UInt
 toUInt (Word32 a) = a
+
+instance word32Integral :: Integral Word32 where
+    fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
+    toBigInt (Word32 a) = BI.fromInt <<< U.toInt $ a
         
 -- | Bitwise AND.
 and :: Word32 -> Word32 -> Word32
