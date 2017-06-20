@@ -2,6 +2,8 @@ module Data.Word
        ( Word
        , Word32
        , Word8
+       , (.&.)
+       , (.|.)
        ) where
        
 import Prelude
@@ -68,6 +70,19 @@ instance word32Bits :: Bits Word32 where
     shr (Word32 a) s  = Word32 $ B.shr a s
     zshr (Word32 a) s = Word32 $ B.zshr a s
 
+instance heytingAlgebraWord32 :: HeytingAlgebra Word32 where
+    ff = Word32 bottom
+    tt = Word32 top
+    implies (Word32 a) (Word32 b) = Word32 $ B.or (B.complement a) b
+    conj (Word32 a) (Word32 b) = Word32 $ B.and a b
+    disj (Word32 a) (Word32 b) = Word32 $ B.or a b
+    not (Word32 a) = Word32 $ B.complement a
+
+instance booleanAlgebra32 :: BooleanAlgebra Word32
+
+infixl 10 conj as .&.
+infixl 10 disj as .|.
+         
 -- | A generic Word8
 newtype Word8 = Word8 U.UInt
 

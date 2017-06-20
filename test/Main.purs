@@ -4,11 +4,12 @@ import Prelude (Unit, discard, top, ($), (+), (==))
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
+import Data.BooleanAlgebra (not)
 import Data.UInt (fromInt)
        
-import Data.Bits
+import Data.Bits (shl, shr, zshr)
 import Data.Integral (fromIntegral)
-import Data.Word (Word)
+import Data.Word (Word, (.&.), (.|.))
 
 import Test.Assert (ASSERT, assert')
     
@@ -18,8 +19,8 @@ main = do
     assert' "Word 4  +  Word 2 == Word 6" $ fromIntegral 4  +  fromIntegral 2 == fromIntegral 6 :: Word
     assert' "Word 4 .&. Word 4 == Word 4" $ fromIntegral 4 .&. fromIntegral 4 == fromIntegral 4 :: Word
     assert' "Word 4 .|. Word 2 == Word 6" $ fromIntegral 4 .|. fromIntegral 2 == fromIntegral 6 :: Word
-    assert' "Word 4 .^. Word 2 == Word 6" $ fromIntegral 4 .^. fromIntegral 2 == fromIntegral 6 :: Word
-    assert' "complement Word 0x00000000 = complement Word 0xFFFFFFFF" $ complement(fromIntegral 0x00000000) == top :: Word
+--    assert' "Word 4 .^. Word 2 == Word 6" $ fromIntegral 4 .^. fromIntegral 2 == fromIntegral 6 :: Word
+    assert' "not Word 0x00000000 = complement Word 0xFFFFFFFF" $ not(fromIntegral 0x00000000) == top :: Word
     assert' "shl (Word 4)  == (Word 8)" $ shl (fromIntegral 4)  (fromInt 1) == (fromIntegral 8) :: Word
     assert' "shr (Word 4)  == (Word 2)" $ shr (fromIntegral 4)  (fromInt 1) == (fromIntegral 2) :: Word
     assert' "zshr (Word 4) == (Word 2)" $ zshr (fromIntegral 4) (fromInt 1) == (fromIntegral 2) :: Word
