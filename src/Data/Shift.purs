@@ -4,20 +4,29 @@ module Data.Shift
 
 -- | Laws:
 -- |
--- | - a `shr` 0 == a
--- | - a `oshr` 0 == a
--- | - a `shl` 0 == a
--- | - a `cshr` 0 == a
--- | - a `cshl` 0 == a
+-- | - Identity
+-- |     a `shr`  0 = a
+-- |     a `oshr` 0 = a
+-- |     a `shl`  0 = a
+-- |     a `cshr` 0 = a
+-- |     a `cshl` 0 = a
 -- |
--- | - bottom <= a `shr` n <= top
--- | - bottom <= a `shl` n <= top
+-- | - Preserve Range
+-- |     bottom <= a `shr`  n <= top
+-- |     bottom <= a `oshr` n <= top
+-- |     bottom <= a `shl`  n <= top
+-- |     bottom <= a `cshr` n <= top 
+-- |     bottom <= a `cshl` n <= top
 -- |
--- | - bottom <= a `cshr` n <= top 
--- | - bottom <= a `cshl` n <= top
-
+-- | - Order Independence
+-- |     (a `shr`  n) `shr`  m == (a `shr`  m) `shr`  n
+-- |     (a `oshr` n) `oshr` m == (a `oshr` m) `oshr` n
+-- |     (a `shl`  n) `shl`  m == (a `shl`  m) `shl`  n
+-- |     (a `cshr` n) `cshr` m == (a `cshr` m) `cshr` n
+-- |     (a `cshl` n) `cshl` m == (a `cshl` m) `cshl` n
+-- |
 -- | Other:
--- | 
+-- |
 -- | n > width of representation should be well behaved by shifting
 -- | in one/zero accordingly.
    
