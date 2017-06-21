@@ -11,6 +11,7 @@ import Data.String (take)
 import Data.BigInt as BI
 
 import Data.Bits (class Bits)
+import Data.Shift (class Shift)
 import Data.Integral (class Integral)
 import Data.UInt (UInt, fromInt, fromNumber, toInt) as U
 import Data.UInt.Bits as B
@@ -82,7 +83,14 @@ instance booleanAlgebra32 :: BooleanAlgebra Word32
 
 infixl 10 conj as .&.
 infixl 10 disj as .|.
-         
+
+instance shift32 :: Shift Word32 where
+    shr (Word32 a) s = Word32 $ B.shr a s
+    zshr (Word32 a) s = Word32 $ B.zshr a s
+    shl (Word32 a) s = Word32 $ B.shl a s
+    cshr (Word32 a) s = Word32 $ B.or (B.shr a s) (B.shl a ((U.fromInt 32) - s)) 
+    cshl (Word32 a) s = Word32 $ B.or (B.shl a s) (B.shr a ((U.fromInt 32) - s))
+
 -- | A generic Word8
 newtype Word8 = Word8 U.UInt
 

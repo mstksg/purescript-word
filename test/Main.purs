@@ -7,8 +7,8 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.BooleanAlgebra (not)
 import Data.UInt (fromInt)
        
-import Data.Bits (shl, shr, zshr)
 import Data.Integral (fromIntegral)
+import Data.Shift (shl, shr, zshr)
 import Data.Word (Word, (.&.), (.|.))
 
 import Test.Assert (ASSERT, assert')
