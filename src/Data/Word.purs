@@ -59,6 +59,9 @@ instance semiringWord32 :: Semiring Word32 where
     add (Word32 a) (Word32 b) = Word32 (a+b)
     mul (Word32 a) (Word32 b) = Word32 (a*b)
 
+instance ring32 :: Ring Word32 where
+    sub (Word32 a) (Word32 b) = Word32 (a-b)
+    
 instance word32Integral :: Integral Word32 where
     fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word32 a) = BI.fromInt <<< U.toInt $ a
@@ -77,8 +80,12 @@ infixl 10 conj as .&.
 infixl 10 disj as .|.
 
 instance shift32 :: Shift Word32 where
-    shr (Word32 a) s = Word32 $ B.shr a s
-    zshr (Word32 a) s = Word32 $ B.zshr a s
+    shr (Word32 a) s = Word32 $ if (B.and a (U.fromInt 0x8000000) > (U.fromInt 0))
+        then if s >= (U.fromInt 32)
+            then (B.complement (U.fromInt 0))
+            else B.or (B.shr a s) ((B.complement (U.fromInt 0)) - ((B.shl (U.fromInt 1) ((U.fromInt 32) - s)) - (U.fromInt 1)))
+        else B.shr a s
+    zshr (Word32 a) s = Word32 $ if s >= (U.fromInt 32) then (U.fromInt 0) else B.zshr a s
     shl (Word32 a) s = Word32 $ B.shl a s
     cshr (Word32 a) s = Word32 $ B.or (B.shr a s) (B.shl a ((U.fromInt 32) - s)) 
     cshl (Word32 a) s = Word32 $ B.or (B.shl a s) (B.shr a ((U.fromInt 32) - s))
@@ -110,6 +117,9 @@ instance semiringWord16 :: Semiring Word16 where
     add (Word16 a) (Word16 b) = Word16 $ B.and (a+b) (U.fromInt 0xFFFF)
     mul (Word16 a) (Word16 b) = Word16 $ B.and (a*b) (U.fromInt 0xFFFF)
 
+instance ring16 :: Ring Word16 where
+    sub (Word16 a) (Word16 b) = Word16 (a-b)
+
 instance word16Integral :: Integral Word16 where
     fromBigInt bi = Word16 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word16 a) = BI.fromInt <<< U.toInt $ a
@@ -128,7 +138,11 @@ instance booleanAlgebra16 :: BooleanAlgebra Word16
 --infixl 10 disj as .|.
 
 instance shift16 :: Shift Word16 where
-    shr (Word16 a) s = Word16 $ B.shr a s
+    shr (Word16 a) s = Word16 $ if (B.and a (U.fromInt 0x8000) > (U.fromInt 0))
+        then if s >= (U.fromInt 16)
+            then (U.fromInt 0xFFFF)
+            else B.or (B.shr a s) ((U.fromInt 0xFFFF) - ((B.shl (U.fromInt 1) ((U.fromInt 16) - s)) - (U.fromInt 1)))
+        else B.shr a s
     zshr (Word16 a) s = Word16 $ B.zshr a s
     shl (Word16 a) s = Word16 $ B.shl a s
     cshr (Word16 a) s = Word16 $ B.or (B.shr a s) (B.shl a ((U.fromInt 16) - s)) 
@@ -158,6 +172,9 @@ instance semiringWord8 :: Semiring Word8 where
     add (Word8 a) (Word8 b) = Word8 $ B.and (a+b) (U.fromInt 0xFF)
     mul (Word8 a) (Word8 b) = Word8 $ B.and (a*b) (U.fromInt 0xFF)
 
+instance ring8 :: Ring Word8 where
+    sub (Word8 a) (Word8 b) = Word8 (a-b)
+
 instance word8Integral :: Integral Word8 where
     fromBigInt bi = Word8 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word8 a) = BI.fromInt <<< U.toInt $ a
@@ -176,7 +193,11 @@ instance booleanAlgebra8 :: BooleanAlgebra Word8
 --infixl 10 disj as .|.
 
 instance shift8 :: Shift Word8 where
-    shr (Word8 a) s = Word8 $ B.shr a s
+    shr (Word8 a) s = Word8 $ if (B.and a (U.fromInt 0x80) > (U.fromInt 0))
+        then if s >= (U.fromInt 8)
+            then (U.fromInt 0xFF)
+            else B.or (B.shr a s) ((U.fromInt 0xFF) - ((B.shl (U.fromInt 1) ((U.fromInt 8) - s)) - (U.fromInt 1)))
+        else B.shr a s
     zshr (Word8 a) s = Word8 $ B.zshr a s
     shl (Word8 a) s = Word8 $ B.shl a s
     cshr (Word8 a) s = Word8 $ B.or (B.shr a s) (B.shl a ((U.fromInt 8) - s)) 
