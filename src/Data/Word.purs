@@ -1,6 +1,8 @@
 module Data.Word
+
        ( Word
        , Word32
+       , Word16
        , Word8
        , (.&.)
        , (.|.)
@@ -10,7 +12,6 @@ import Prelude
 import Data.String (take)
 import Data.BigInt as BI
 
-import Data.Bits (class Bits)
 import Data.Shift (class Shift)
 import Data.Integral (class Integral)
 import Data.UInt (UInt, fromInt, fromNumber, toInt) as U
@@ -62,15 +63,6 @@ instance word32Integral :: Integral Word32 where
     fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word32 a) = BI.fromInt <<< U.toInt $ a
 
-instance word32Bits :: Bits Word32 where
-    and (Word32 a) (Word32 b) = Word32 (B.and a b)
-    or (Word32 a) (Word32 b) = Word32 (B.or a b)
-    xor (Word32 a) (Word32 b) = Word32 (B.xor a b)
-    complement (Word32 a) = Word32 $ B.complement a
-    shl (Word32 a) s = Word32 $ B.shl a s
-    shr (Word32 a) s  = Word32 $ B.shr a s
-    zshr (Word32 a) s = Word32 $ B.zshr a s
-
 instance heytingAlgebraWord32 :: HeytingAlgebra Word32 where
     ff = Word32 bottom
     tt = Word32 top
@@ -90,6 +82,57 @@ instance shift32 :: Shift Word32 where
     shl (Word32 a) s = Word32 $ B.shl a s
     cshr (Word32 a) s = Word32 $ B.or (B.shr a s) (B.shl a ((U.fromInt 32) - s)) 
     cshl (Word32 a) s = Word32 $ B.or (B.shl a s) (B.shr a ((U.fromInt 32) - s))
+
+    -- | A generic Word16
+newtype Word16 = Word16 U.UInt
+
+instance showWord16 :: Show Word16 where
+    show (Word16 a) = "Word16 0x"
+                                  <> showHex (B.and (B.shr a (U.fromInt 12)) (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 8))  (U.fromInt 0xF))  
+                                  <> showHex (B.and (B.shr a (U.fromInt 4))  (U.fromInt 0xF))  
+                                  <> showHex (B.and a (U.fromInt 0xF))
+                                  <> " (" <> show a <> ")"
+
+instance eqWord16 :: Eq Word16 where
+    eq (Word16 a) (Word16 b) = (B.and a (U.fromInt 0xFFFF)) == (B.and b (U.fromInt 0xFFFF))
+
+instance ordWord16 :: Ord Word16 where
+    compare (Word16 a) (Word16 b) = compare (B.and a (U.fromInt 0xFFFF))  (B.and b (U.fromInt 0xFFFF))
+
+instance boundedWord16 :: Bounded Word16 where
+    bottom = Word16 $ U.fromInt 0
+    top = Word16 $ B.and (B.complement (U.fromInt 0)) (U.fromInt 0xFFFF)
+
+instance semiringWord16 :: Semiring Word16 where
+    zero = bottom
+    one = Word16 $ U.fromInt 1
+    add (Word16 a) (Word16 b) = Word16 $ B.and (a+b) (U.fromInt 0xFFFF)
+    mul (Word16 a) (Word16 b) = Word16 $ B.and (a*b) (U.fromInt 0xFFFF)
+
+instance word16Integral :: Integral Word16 where
+    fromBigInt bi = Word16 $ U.fromNumber <<< BI.toNumber $ bi
+    toBigInt (Word16 a) = BI.fromInt <<< U.toInt $ a
+
+instance heytingAlgebraWord16 :: HeytingAlgebra Word16 where
+    ff = Word16 bottom
+    tt = Word16 top
+    implies (Word16 a) (Word16 b) = Word16 $ B.or (B.complement a) b
+    conj (Word16 a) (Word16 b) = Word16 $ B.and a b
+    disj (Word16 a) (Word16 b) = Word16 $ B.or a b
+    not (Word16 a) = Word16 $ B.complement a
+
+instance booleanAlgebra16 :: BooleanAlgebra Word16
+
+--infixl 10 conj as .&.
+--infixl 10 disj as .|.
+
+instance shift16 :: Shift Word16 where
+    shr (Word16 a) s = Word16 $ B.shr a s
+    zshr (Word16 a) s = Word16 $ B.zshr a s
+    shl (Word16 a) s = Word16 $ B.shl a s
+    cshr (Word16 a) s = Word16 $ B.or (B.shr a s) (B.shl a ((U.fromInt 16) - s)) 
+    cshl (Word16 a) s = Word16 $ B.or (B.shl a s) (B.shr a ((U.fromInt 16) - s))
 
 -- | A generic Word8
 newtype Word8 = Word8 U.UInt
@@ -119,21 +162,27 @@ instance word8Integral :: Integral Word8 where
     fromBigInt bi = Word8 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word8 a) = BI.fromInt <<< U.toInt $ a
 
-instance word8Bits :: Bits Word8 where
-    and (Word8 a) (Word8 b) = Word8 (B.and a b)
-    or (Word8 a) (Word8 b) = Word8 (B.or a b)
-    xor (Word8 a) (Word8 b) = Word8 (B.xor a b)
-    complement (Word8 a) = Word8 $ B.and (B.complement a) (U.fromInt 0xFF)
-    shl (Word8 a) s = Word8 $ B.and (B.shl a s) (U.fromInt 0xFF)
-    shr (Word8 a) s  = Word8 $ B.shr a s
+instance heytingAlgebraWord8 :: HeytingAlgebra Word8 where
+    ff = Word8 bottom
+    tt = Word8 top
+    implies (Word8 a) (Word8 b) = Word8 $ B.or (B.complement a) b
+    conj (Word8 a) (Word8 b) = Word8 $ B.and a b
+    disj (Word8 a) (Word8 b) = Word8 $ B.or a b
+    not (Word8 a) = Word8 $ B.complement a
+
+instance booleanAlgebra8 :: BooleanAlgebra Word8
+
+--infixl 10 conj as .&.
+--infixl 10 disj as .|.
+
+instance shift8 :: Shift Word8 where
+    shr (Word8 a) s = Word8 $ B.shr a s
     zshr (Word8 a) s = Word8 $ B.zshr a s
+    shl (Word8 a) s = Word8 $ B.shl a s
+    cshr (Word8 a) s = Word8 $ B.or (B.shr a s) (B.shl a ((U.fromInt 8) - s)) 
+    cshl (Word8 a) s = Word8 $ B.or (B.shl a s) (B.shr a ((U.fromInt 8) - s))
 
-
-
-
-
-
---fromInt :: Int -> Word32
+    --fromInt :: Int -> Word32
 --fromInt = Word32 <<< ((add (U.fromInt 0)) :: U.UInt -> U.UInt) <<< U.fromInt
 
 --fromUInt :: U.UInt -> Word32
