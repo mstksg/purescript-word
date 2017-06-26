@@ -5,7 +5,9 @@ import Prelude (Unit, show, (<>), discard, top, bottom, ($), (+), (-), (==))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.BooleanAlgebra (not)
+import Data.BigInt (fromString)
 import Data.UInt (fromInt)
+import Data.Maybe (fromMaybe)
        
 import Data.Integral (fromIntegral)
 import Data.Shift (shl, shr, zshr)
@@ -119,5 +121,5 @@ main = do
     assert' "shr top 31 == top" $ shr top (fromInt 31) == top :: Word32
     assert' "shr top 15 == top" $ shr top (fromInt 15) == top :: Word16
     assert' "shr top 7 == top" $ shr top (fromInt 7) == top :: Word8
-
+    
     log "Done"

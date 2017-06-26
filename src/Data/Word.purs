@@ -216,9 +216,6 @@ instance heytingAlgebraWord16 :: HeytingAlgebra Word16 where
 
 instance booleanAlgebra16 :: BooleanAlgebra Word16
 
---infixl 10 conj as .&.
---infixl 10 disj as .|.
-
 instance shift16 :: Shift Word16 where
     shr (Word16 a) s = Word16 $ if (U.and a (U.fromInt 0x8000) > (U.fromInt 0))
         then if s >= (U.fromInt 16)
@@ -270,9 +267,6 @@ instance heytingAlgebraWord8 :: HeytingAlgebra Word8 where
     not (Word8 a) = Word8 $ U.complement a
 
 instance booleanAlgebra8 :: BooleanAlgebra Word8
-
---infixl 10 conj as .&.
---infixl 10 disj as .|.
 
 instance shift8 :: Shift Word8 where
     shr (Word8 a) s = Word8 $ if (U.and a (U.fromInt 0x80) > (U.fromInt 0))
