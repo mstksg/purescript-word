@@ -1,6 +1,7 @@
 module Data.Word
 
        ( Word
+       , Word64
        , Word32
        , Word16
        , Word8
@@ -9,14 +10,16 @@ module Data.Word
        ) where
        
 import Prelude
-import Data.String (take)
+import Data.String (take, drop)
 import Data.BigInt as BI
-
+import Data.Maybe (fromMaybe)
+       
 import Data.Shift (class Shift)
 import Data.Integral (class Integral)
 import Data.UInt (UInt, fromInt, fromNumber, toInt) as U
 import Data.UInt.Bits as B
-
+import Data.BigInt.Bits as BB
+       
 -- Inelegant brute force conversion
 showHex :: U.UInt -> String
 showHex b | b < (U.fromInt 10) = take 1 $ show b
@@ -28,9 +31,92 @@ showHex b | b == (U.fromInt 14) = "E"
 showHex b | b == (U.fromInt 15) = "F"
 showHex b = "#" <> show b <> "#"
 
+showBigHex :: BI.BigInt -> String
+showBigHex b | b < (BI.fromInt 10) = take 1 $ drop 12 $ show b
+showBigHex b | b == (BI.fromInt 10) = "A"
+showBigHex b | b == (BI.fromInt 11) = "B"
+showBigHex b | b == (BI.fromInt 12) = "C"
+showBigHex b | b == (BI.fromInt 13) = "D"
+showBigHex b | b == (BI.fromInt 14) = "E"
+showBigHex b | b == (BI.fromInt 15) = "F"
+showBigHex b = "#" <> show b <> "#"
+
+-- | A default Word
+type Word = Word32
+
+infixl 10 conj as .&.
+infixl 10 disj as .|.
+
+-- | A generic Word64
+newtype Word64 = Word64 BI.BigInt
+
+instance showWord64 :: Show Word64 where
+show (Word64 a) = "Word64 0x" <> showBigHex (BB.and (BB.shr a (U.fromInt 60)) (BI.fromInt 0xF))
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 56)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 52)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 48)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 44)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 40)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 36)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 32)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 28)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 24)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 20)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 16)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 12)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 8)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and (BB.shr a (U.fromInt 4)) (BI.fromInt 0xF))  
+                                  <> showBigHex (BB.and a (BI.fromInt 0xF))
+                                  <> " (" <> show a <> ")"
+
+instance eqWord64 :: Eq Word64 where
+    eq (Word64 a) (Word64 b) = a == b
+
+instance ordWord64 :: Ord Word64 where
+    compare (Word64 a) (Word64 b) = compare a b
+
+instance boundedWord64 :: Bounded Word64 where
+    bottom = Word64 $ BI.fromInt 0
+    top = Word64 $ BB.complement (BI.fromInt 0)
+
+instance semiringWord64 :: Semiring Word64 where
+    zero = bottom
+    one = Word64 $ BI.fromInt 1
+    add (Word64 a) (Word64 b) = Word64 (a+b)
+    mul (Word64 a) (Word64 b) = Word64 (a*b)
+
+instance ring64 :: Ring Word64 where
+    sub (Word64 a) (Word64 b) = Word64 (a-b)
+    
+instance word64Integral :: Integral Word64 where
+    fromBigInt bi = Word64 bi
+    toBigInt (Word64 a) = a
+
+instance heytingAlgebraWord64 :: HeytingAlgebra Word64 where
+    ff = bottom
+    tt = top
+    implies (Word64 a) (Word64 b) = Word64 $ BB.or (BB.complement a) b
+    conj (Word64 a) (Word64 b) = Word64 $ BB.and a b
+    disj (Word64 a) (Word64 b) = Word64 $ BB.or a b
+    not (Word64 a) = Word64 $ BB.complement a
+
+instance booleanAlgebra64 :: BooleanAlgebra Word64
+
+instance shift64 :: Shift Word64 where
+    shr (Word64 a) s = Word64 $ if (BB.and a (fromMaybe (BI.fromInt 0) (BI.fromString "92e17")) > (BI.fromInt 0))
+        then if s >= (U.fromInt 64)
+            then (BB.complement (BI.fromInt 0))
+            else BB.or (BB.shr a s) ((BB.complement (BI.fromInt 0)) - ((BB.shl (BI.fromInt 1) ((U.fromInt 64) - s)) - (BI.fromInt 1)))
+        else BB.shr a s
+    zshr (Word64 a) s = Word64 $ if s >= (U.fromInt 64)
+                                 then (BI.fromInt 0)
+                                 else BB.and (BB.shr a s) ((BB.shl (BI.fromInt 1) ((U.fromInt 64) - s)) - (BI.fromInt 1))
+    shl (Word64 a) s = Word64 $ BB.shl a s
+    cshr (Word64 a) s = Word64 $ BB.or (BB.shr a s) (BB.shl a ((U.fromInt 64) - s)) 
+    cshl (Word64 a) s = Word64 $ BB.or (BB.shl a s) (BB.shr a ((U.fromInt 64) - s))
+
 -- | A generic Word32
 newtype Word32 = Word32 U.UInt
-type Word = Word32
 
 instance showWord32 :: Show Word32 where
     show (Word32 a) = "Word32 0x" <> showHex (B.and (B.shr a (U.fromInt 28)) (U.fromInt 0xF))
@@ -75,9 +161,6 @@ instance heytingAlgebraWord32 :: HeytingAlgebra Word32 where
     not (Word32 a) = Word32 $ B.complement a
 
 instance booleanAlgebra32 :: BooleanAlgebra Word32
-
-infixl 10 conj as .&.
-infixl 10 disj as .|.
 
 instance shift32 :: Shift Word32 where
     shr (Word32 a) s = Word32 $ if (B.and a (U.fromInt 0x8000000) > (U.fromInt 0))
