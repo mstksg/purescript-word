@@ -89,8 +89,6 @@ main = do
     assert' "zshr top 33 == bottom" $ zshr top (fromInt 33) == bottom :: Word32
     assert' "zshr top 17 == bottom" $ zshr top (fromInt 17) == bottom :: Word16
     assert' "zshr top 9 == bottom" $ zshr top (fromInt 9) == bottom :: Word8
-    log $ "top " <> show (top ::Word64)
-    log $ "zshr top 63 " <> show (zshr top (fromInt 63)::Word64)
     assert' "zshr top 63 == bottom" $ zshr top (fromInt 63) == bottom + (fromIntegral 1) :: Word64
     assert' "zshr top 31 == bottom" $ zshr top (fromInt 31) == bottom + (fromIntegral 1) :: Word32
     assert' "zshr top 15 == bottom" $ zshr top (fromInt 15) == bottom + (fromIntegral 1) :: Word16
