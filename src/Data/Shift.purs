@@ -1,4 +1,4 @@
--- | This module defines bitwise shifting operations typeclass.
+-- | A `Shift` typeclass that defines bitwise shifting operations.
 module Data.Shift
     (class Shift, shr, zshr, shl, cshr, cshl ) where
 
@@ -33,7 +33,8 @@ module Data.Shift
 import Data.Bounded (class Bounded)
 import Data.Ord (class Ord)
 import Data.UInt (UInt)
-    
+
+-- | The `Shift` typeclass that requires the internal type to be both `Bounded` and `Ord`.
 class (Bounded a, Ord a) <= Shift a where
     -- | Shift bits right, zero fill
     shr :: a -> UInt -> a
