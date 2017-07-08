@@ -17,8 +17,14 @@ import Data.Int as I
 import Data.Maybe (fromMaybe)
        
 import Data.Shift (class Shift)
+import Data.Num (class Num)
+import Data.Real (class Real)
 import Data.Integral (class Integral)
 import Data.UInt as U
+import Data.Ord as O
+import Data.Rational as RA
+import Data.Ring as R
+import Data.EuclideanRing as E
        
 -- | Inelegant brute force conversions
 showHex :: U.UInt -> String
@@ -96,10 +102,29 @@ instance semiringWord64 :: Semiring Word64 where
 -- | Instance of `Ring` for `Word64` for subtraction.
 instance ring64 :: Ring Word64 where
     sub (Word64 a) (Word64 b) = Word64 (a-b)
-    
+
+-- | Instance of `CommutativeRing` for `Word64`.
+instance commutativeRing64 :: CommutativeRing Word64
+         
+-- | Instance of `EuclideanRing` for `Word64`.
+instance euclideanRing64 :: EuclideanRing Word64 where
+    mod (Word64 a) (Word64 b) = Word64 $ BI.fromInt <<< U.toInt $ E.mod (U.fromNumber <<< BI.toNumber $ a) (U.fromNumber <<< BI.toNumber $ b)
+    div (Word64 a) (Word64 b) = Word64 $ BI.fromInt <<< U.toInt $ E.div (U.fromNumber <<< BI.toNumber $ a) (U.fromNumber <<< BI.toNumber $ b)
+    degree (Word64 a) = E.degree $ U.fromNumber <<< BI.toNumber $ a
+         
+-- | Instance of `Num` for `Word64` for conversions between numbers.
+instance word64Num :: Num Word64 where
+    negate = R.negate
+    abs = O.abs
+    signum = O.signum
+    fromBigInt bi = Word64 bi
+
+-- | Instance of `Real` for `Word64` for conversions between numbers.
+instance realIWord64 :: Real Word64 where
+    toRational (Word64 a) = RA.fromInt <<< (fromMaybe 0) <<< I.fromNumber <<< BI.toNumber $ a
+
 -- | Instance of `Integral` for `Word64` for conversions between numbers.
 instance word64Integral :: Integral Word64 where
-    fromBigInt bi = Word64 bi
     toBigInt (Word64 a) = a
 
 -- | Instance of `HeytingAlgebra` for `Word64` for bitwise logical operations.
@@ -167,9 +192,28 @@ instance semiringWord32 :: Semiring Word32 where
 instance ring32 :: Ring Word32 where
     sub (Word32 a) (Word32 b) = Word32 (a-b)
     
+-- | Instance of `CommutativeRing` for `Word32`.
+instance commutativeRing32 :: CommutativeRing Word32
+
+-- | Instance of `EuclideanRing` for `Word32`.
+instance euclideanRing32 :: EuclideanRing Word32 where
+    mod (Word32 a) (Word32 b) = Word32 $ E.mod a b
+    div (Word32 a) (Word32 b) = Word32 $ E.div a b
+    degree (Word32 a) = E.degree a
+         
+-- | Instance of `Num` for `Word32` for conversions between numbers.
+instance word32Num :: Num Word32 where
+    negate = R.negate
+    abs = O.abs
+    signum = O.signum
+    fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
+
+-- | Instance of `Real` for `Word32` for conversions between numbers.
+instance realWord32 :: Real Word32 where
+    toRational (Word32 a) = RA.fromInt <<< U.toInt $ a
+
 -- | Instance of `Integral` for `Word32` for conversions between numbers.
 instance word32Integral :: Integral Word32 where
-    fromBigInt bi = Word32 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word32 a) = BI.fromInt <<< U.toInt $ a
 
 -- | Instance of `HeytingAlgebra` for `Word32` for bitwise logical operations.
@@ -232,9 +276,28 @@ instance semiringWord16 :: Semiring Word16 where
 instance ring16 :: Ring Word16 where
     sub (Word16 a) (Word16 b) = Word16 (a-b)
 
+-- | Instance of `CommutativeRing` for `Word16`.
+instance commutativeRing16 :: CommutativeRing Word16
+
+-- | Instance of `EuclideanRing` for `Word16`.
+instance euclideanRing16 :: EuclideanRing Word16 where
+    mod (Word16 a) (Word16 b) = Word16 $ E.mod a b
+    div (Word16 a) (Word16 b) = Word16 $ E.div a b
+    degree (Word16 a) = E.degree a
+         
+-- | Instance of `Num` for `Word16` for conversions between numbers.
+instance word16Num :: Num Word16 where
+    negate = R.negate
+    abs = O.abs
+    signum = O.signum
+    fromBigInt bi = Word16 $ U.fromNumber <<< BI.toNumber $ bi
+
+-- | Instance of `Real` for `Word16` for conversions between numbers.
+instance realWord16 :: Real Word16 where
+    toRational (Word16 a) = RA.fromInt <<< U.toInt $ a
+
 -- | Instance of `Integral` for `Word16` for conversions between numbers.
 instance word16Integral :: Integral Word16 where
-    fromBigInt bi = Word16 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word16 a) = BI.fromInt <<< U.toInt $ a
 
 -- | Instance of `HeytingAlgebra` for `Word16` for bitwise logical operations.
@@ -294,9 +357,28 @@ instance semiringWord8 :: Semiring Word8 where
 instance ring8 :: Ring Word8 where
     sub (Word8 a) (Word8 b) = Word8 (a-b)
 
+-- | Instance of `CommutativeRing` for `Word8`.
+instance commutativeRing8 :: CommutativeRing Word8
+
+-- | Instance of `EuclideanRing` for `Word8`.
+instance euclideanRing8 :: EuclideanRing Word8 where
+    mod (Word8 a) (Word8 b) = Word8 $ E.mod a b
+    div (Word8 a) (Word8 b) = Word8 $ E.div a b
+    degree (Word8 a) = E.degree a
+         
+-- | Instance of `Num` for `Word8` for conversions between numbers.
+instance word8Num :: Num Word8 where
+    negate = R.negate
+    abs = O.abs
+    signum = O.signum
+    fromBigInt bi = Word8 $ U.fromNumber <<< BI.toNumber $ bi
+
+-- | Instance of `Real` for `Word8` for conversions between numbers.
+instance realWord8 :: Real Word8 where
+    toRational (Word8 a) = RA.fromInt <<< U.toInt $ a
+
 -- | Instance of `Integral` for `Word8` for conversions between numbers.
 instance word8Integral :: Integral Word8 where
-    fromBigInt bi = Word8 $ U.fromNumber <<< BI.toNumber $ bi
     toBigInt (Word8 a) = BI.fromInt <<< U.toInt $ a
 
 -- | Instance of `HeytingAlgebra` for `Word8` for bitwise logical operations.
