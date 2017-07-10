@@ -6,5 +6,5 @@ install:
   - npm install purescript pulp bower -g
   - bower install
 script:
-  - npm run build
+  - npm install bit-integer
   - pulp build && pulp test
