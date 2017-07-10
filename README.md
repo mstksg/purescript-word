@@ -1,7 +1,7 @@
 # purescript-word
 
-[![Latest release](http://img.shields.io/github/release/purescript/purescript-word.svg)](https://github.com/Proclivis/purescript-word/releases)
-[![Build status](https://travis-ci.org/purescript/purescript-word.svg?branch=master)](https://travis-ci.org/purescript/purescript-word)
+[![Latest release](http://img.shields.io/github/release/Proclivis/purescript-word.svg)](https://github.com/Proclivis/purescript-word/releases)
+[![Build status](https://travis-ci.org/Proclivis/purescript-word.svg?branch=master)](https://travis-ci.org/Proclivis/purescript-word)
 
 Fixed width words and operations.
 
