@@ -37,6 +37,7 @@ showHex b | b == (U.fromInt 14) = "E"
 showHex b | b == (U.fromInt 15) = "F"
 showHex b = "#" <> show b <> "#"
 
+-- | More brute force stuff.
 showBigHex :: BI.BigInt -> String
 showBigHex b | b < (BI.fromInt 10) = take 1 $ drop 12 $ show b
 showBigHex b | b == (BI.fromInt 10) = "A"
@@ -47,7 +48,7 @@ showBigHex b | b == (BI.fromInt 14) = "E"
 showBigHex b | b == (BI.fromInt 15) = "F"
 showBigHex b = "#" <> show b <> "#"
 
--- | A default `Word`
+-- | A default `Word`.
 type Word = Word32
 
 -- | Conjunction
@@ -62,22 +63,22 @@ newtype Word64 = Word64 BI.BigInt
 -- | Instance of `Show` for `Word64` that displays the internal value in hex.
 instance showWord64 :: Show Word64 where
 show (Word64 a) = "Word64 0x" <> showBigHex (BI.and (BI.shr a ((I.toNumber 60))) (BI.fromInt 0xF))
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 56)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 52)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 48)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 44)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 40)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 36)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 32)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 28)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 24)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 20)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 16)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 12)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 8)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and (BI.shr a (I.toNumber 4)) (BI.fromInt 0xF))  
-                                  <> showBigHex (BI.and a (BI.fromInt 0xF))
-                                  <> " (" <> show a <> ")"
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 56)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 52)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 48)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 44)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 40)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 36)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 32)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 28)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 24)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 20)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 16)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 12)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 8)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and (BI.shr a (I.toNumber 4)) (BI.fromInt 0xF))  
+                              <> showBigHex (BI.and a (BI.fromInt 0xF))
+                              <> " (" <> show a <> ")"
 
 -- | Instance of `Eq` for `Word64` for comparing values.
 instance eqWord64 :: Eq Word64 where
