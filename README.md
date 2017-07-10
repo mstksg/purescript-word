@@ -31,7 +31,3 @@ bower install
 npm install
 ```
 Then, use `pulp` to build, run tests and generate the documentation.
-
-## Documentation
-
-Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-word).
