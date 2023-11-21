@@ -17,4 +17,4 @@ workspace:
       git: https://github.com/mstksg/purescript-numerics.git
       ref: e23d4b40a7a2010026a67a09900da82cf9aed8e2
   package_set:
-    registry: 46.0.2
+    registry: 45.1.1
