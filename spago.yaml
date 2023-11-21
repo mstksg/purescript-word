@@ -1,0 +1,20 @@
+package:
+  dependencies:
+    - console
+    - effect
+    - prelude
+  name: word
+  # test:
+  #   dependencies:
+  #     - prelude
+  #     - assert
+  #     - numerics
+  #     - big-integer
+  #   main: Test.Main
+workspace:
+  extra_packages:
+    numerics:
+      git: https://github.com/mstksg/purescript-numerics.git
+      ref: e23d4b40a7a2010026a67a09900da82cf9aed8e2
+  package_set:
+    registry: 46.0.2
